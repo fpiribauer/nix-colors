@@ -242,7 +242,7 @@ in {
 
 # Upstreaming new schemes
 
-Please please upstream nice schemes you have created!
+Please share nice schemes you have created to upstream!
 
 It's pretty easy to do. Just open up a PR on
 [tinted-schemes](https://github.com/tinted-theming/schemes), and once

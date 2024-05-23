@@ -46,7 +46,7 @@ in
       default = "";
       example = "A very nice theme";
       description = ''
-        Color scheme author
+        Color scheme description
       '';
     };
     author = mkOption {
