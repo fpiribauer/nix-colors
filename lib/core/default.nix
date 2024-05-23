@@ -4,6 +4,7 @@
      Example:
      schemeFromYAML "pasque" (builtins.readFile ./pasque.yaml) =>
      {
+       system = "base16";
        author = "Gabriel Fontes (https://github.com/Misterio77)";
        name = "Pasque";
        slug = "pasque";
