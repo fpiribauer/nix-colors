@@ -30,7 +30,7 @@
   */
   schemeFromYAML = import ./schemeFromYAML.nix;
 
-  schemeToYAML = builtins.trace "nix-colors: schemeToYAML is deprecated and will be removed soon." (import ./schemeToYAML.nix);
+  schemeToYAML = import ./schemeToYAML.nix { inherit nixpkgs-lib; };
 
   conversions = import ./conversions.nix { inherit nixpkgs-lib; };
 }
