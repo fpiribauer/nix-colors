@@ -10,15 +10,16 @@ let
     };
 
 in
-{ nixpkgs-lib ? import ((fromFlake "nixpkgs-lib") + "/lib")
+{ pkgs #nixpkgs ? import (fromFlake "nixpkgs")
+, nixpkgs-lib ? import ((fromFlake "nixpkgs-lib") + "/lib")
 , schemes ? fromFlake "schemes"
 , ...
 }: rec {
   lib-contrib = import ./lib/contrib { inherit nixpkgs-lib; };
-  lib-core = import ./lib/core { inherit nixpkgs-lib; };
+  lib-core = import ./lib/core { inherit pkgs nixpkgs-lib; };
   lib = lib-core // { contrib = lib-contrib; };
 
-  tests = import ./lib/core/tests { inherit nixpkgs-lib; };
+  tests = import ./lib/core/tests { inherit pkgs nixpkgs-lib; };
 
   colorSchemes = import ./schemes.nix { inherit lib schemes; };
   # Alias
