@@ -13,9 +13,8 @@
 
   outputs = { self, nixpkgs, nixpkgs-lib, schemes }: rec {
     instantiate = { system }: (import ./. {
-      pkgs = import nixpkgs { inherit system; };
+      inherit system nixpkgs schemes;
       nixpkgs-lib = nixpkgs-lib.lib;
-      schemes = schemes.outPath;
     });
     "x86_64-linux" = instantiate { system = "x86_64-linux"; };
   };

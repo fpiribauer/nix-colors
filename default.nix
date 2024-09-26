@@ -10,11 +10,13 @@ let
     };
 
 in
-{ pkgs #nixpkgs ? import (fromFlake "nixpkgs")
+{ system ? builtins.currentSystem
+, nixpkgs ? import (fromFlake "nixpkgs")
 , nixpkgs-lib ? import ((fromFlake "nixpkgs-lib") + "/lib")
 , schemes ? fromFlake "schemes"
 , ...
 }: rec {
+  pkgs = import nixpkgs { inherit system; allowUnfree = false; };
   lib-contrib = import ./lib/contrib { inherit nixpkgs-lib; };
   lib-core = import ./lib/core { inherit pkgs nixpkgs-lib; };
   lib = lib-core // { contrib = lib-contrib; };
