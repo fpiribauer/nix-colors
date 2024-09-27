@@ -23,7 +23,7 @@ in
 
   tests = import ./lib/core/tests { inherit pkgs nixpkgs-lib; };
 
-  colorSchemes = import ./schemes.nix { inherit lib schemes; };
+  colorSchemes = import ./schemes.nix { inherit lib schemes nixpkgs-lib; };
   # Alias
   colorschemes = colorSchemes;
 

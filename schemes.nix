@@ -1,8 +1,9 @@
-{ lib, schemes, ... }:
+{ lib, nixpkgs-lib, schemes, ... }:
 let
   inherit (builtins)
     readFile readDir attrNames listToAttrs stringLength substring baseNameOf
     filter;
+  foldlAttrs = nixpkgs-lib.attrsets.foldlAttrs;
   inherit (lib) schemeFromYAML;
 
   # Borrowed from nixpkgs
@@ -31,24 +32,28 @@ let
   getColorSchemeFiles = source: system:
     filter isYamlFile (attrNames (readDir "${source}/${system}"));
 
-  getColorSchemes = colorSchemeFiles: system:
-    listToAttrs (map
-      (filename: rec {
-        # Scheme slug
-        name = stripYamlExtension (baseNameOf filename);
-        # Scheme contents
-        value = schemeFromYAML name (readFile "${schemes}/${system}/${filename}");
-      })
-      colorSchemeFiles);
+  getColorSchemes = schemes:
+  let
+    dir = (builtins.readDir schemes);
+  in
+  foldlAttrs (a: n: v:
+    # Ignore files starting with dot (hidden)
+    if (builtins.substring 0 1 n) == "." then
+      a
+    else if v == "regular" && isYamlFile n then
+      let
+        stripped = stripYamlExtension n;
+      in
+      a // { ${stripped} = schemeFromYAML stripped (builtins.readFile "${schemes}/${n}"); }
+    else if v == "directory" then
+      let
+        subresult =  getColorSchemes "${schemes}/${n}";
+      in
+      if subresult == {}  then a else a // { ${n} = subresult; }
+    else # Do not follow symlinks or unknown files
+      a
+    ) {} dir;
 
-  colorSchemeFiles = {
-    base16 = getColorSchemeFiles schemes "base16";
-    base24 = getColorSchemeFiles schemes "base24";
-  };
-
-  colorSchemes = {
-    base16 = getColorSchemes colorSchemeFiles.base16 "base16";
-    base24 = getColorSchemes colorSchemeFiles.base24 "base24";
-  };
+  colorSchemes = getColorSchemes (schemes);
 in
 colorSchemes
